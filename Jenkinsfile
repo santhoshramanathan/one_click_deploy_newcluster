@@ -1,5 +1,7 @@
 node{
-def BUILD_NO=env.BUILD_NUMBER
+environment{
+ BUILD_NO='10'
+}
 stage('Checkout source control') {
 checkout scm
 }
