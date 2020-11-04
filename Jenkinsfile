@@ -1,4 +1,6 @@
 node{
+def BUILD_NUM=env.BUILD_NUMBER
+echo " Build number ${BUILD_NUM} "
 environment{
  BUILD_NO="10"
 }
