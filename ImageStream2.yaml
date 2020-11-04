@@ -1,5 +1,5 @@
 apiVersion: image.openshift.io/v1
 kind: ImageStream
 metadata:
- name: ace-server-prod-10-new
+ name: my-custom-ace-image-10-new
  namespace: ace

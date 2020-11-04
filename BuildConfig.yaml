@@ -1,0 +1,26 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata: 
+  labels: 
+    name: my-custom-ace-image-10-new
+  name: my-custom-ace-image-10-new
+  namespace: ace
+spec: 
+  output: 
+    to: 
+      kind: ImageStreamTag
+      name: "my-custom-ace-image-10-new:latest-amd64"
+      namespace: ace
+  source: 
+    dockerfile: |
+        FROM ace-server-prod-10-new:latest-amd64
+        COPY HTTPEcho.bar /home/aceuser/initial-config/bars/HTTPEcho.bar
+    type: dockerfile
+  strategy: 
+    dockerStrategy: 
+      from: 
+        kind: ImageStreamTag
+        name: "ace-server-prod-10-new:latest-amd64"
+        namespace: ace
+    type: Docker
+  triggers: []
