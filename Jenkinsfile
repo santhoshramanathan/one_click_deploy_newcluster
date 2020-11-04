@@ -1,6 +1,6 @@
 node{
 environment{
- BUILD_NO='10'
+ BUILD_NO="10"
 }
 stage('Checkout source control') {
 checkout scm
