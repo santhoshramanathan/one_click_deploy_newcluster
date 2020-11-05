@@ -65,7 +65,7 @@ spec:
   output: 
     to: 
       kind: ImageStreamTag
-      name: "my-custom-ace-image-"+${BUILD_NO}+":latest-amd64"
+      name: "my-custom-ace-image-${BUILD_NO}:latest-amd64"
       namespace: ace
   source: 
     dockerfile: |
