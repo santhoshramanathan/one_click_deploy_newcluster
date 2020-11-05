@@ -4,7 +4,6 @@ class BuildHandler implements Serializable {
 
 def acepipeline
 def appName
-def mqpipeline
 
 def getAcePipeline() {
  	return acepipeline
@@ -20,14 +19,6 @@ def getAppName() {
  
 void setAppName(appName) {
 	this.appName = appName
-}
-
-def getMQPipeline() {
- 	return mqpipeline
- }
- 
-void setMQPipeline(mqpipeline) {
-	this.mqpipeline = mqpipeline
 }
 
 }
