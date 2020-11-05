@@ -38,9 +38,37 @@ def call(BuildHandler bHandler) {
                 catch (error) {
                     throw error
                 }
-               /* finally {
+                finally {
                     step([$class: 'WsCleanup', notFailBuild: true, deleteDirs: true])
-                }*/
+                }
+            
+        }
+		
+		stage('Openshift Login & Image tag') {
+            
+                try {
+                    aceworkflow.step_oc_login_imagecreate()
+                }
+                catch (error) {
+                    throw error
+                }
+                finally {
+                    step([$class: 'WsCleanup', notFailBuild: true, deleteDirs: true])
+                }
+            
+        }
+		
+		stage('Create Build Config') {
+            
+                try {
+                    aceworkflow.step_create_buildConfig()
+                }
+                catch (error) {
+                    throw error
+                }
+                finally {
+                    step([$class: 'WsCleanup', notFailBuild: true, deleteDirs: true])
+                }
             
         }
 

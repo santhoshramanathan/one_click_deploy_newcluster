@@ -5,7 +5,20 @@ def step_build(){
           checkout scm
           println (">> after checkout")
 
-           sh ''' echo "build number " + ${BUILD_NO}
+           
+ 
+      }
+      catch(error) {
+        println ">> build failed"
+        throw error
+      }
+    }
+}
+
+def step_oc_login_imagecreate(){
+node(){
+try {
+sh ''' echo "build number " + ${BUILD_NO}
 			oc login ${OPEN_SHIFT_URL} --token=eyJhbGciOiJSUzI1NiIsImtpZCI6Ill2T1N3V3JQTjI2YkE2WWVzajlxTDZXVW40QUdCSDgtMUxmV21wSW1tY3cifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJhY2UiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlY3JldC5uYW1lIjoiZGV2b3BzYWNjLXRva2VuLWpnZHRnIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImRldm9wc2FjYyIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6IjMwZDgxMjU2LWVjYzItNDQ3Yi1hZTQ0LTAxZDAxYWM4YjVhYiIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDphY2U6ZGV2b3BzYWNjIn0.QlULKiWdtLk0r3vBiqyYb_iBPzY89mNcz0gHJ-adLj11QPvJjw_LzAwbX45JlKJCqB4mEo7XYaWYijbI2ldndAl6_97Occ1b0FE_ckmSt4RUevTuCw24x78yUp22RJTpf_FWrQOQc4Ly3DOnGpAhnBV1VuJcOYnKh_0WuMs4osKzzt6AG0R6o3DQOzaHOb7aZpzDv1vwjQBOOdv2gbVGUp9ntGY_8VHf6XVpZ2-HSt4qcQTMWLKL2ylcuWHtS-_pwmnOOz_lMSMSpWwqP6U2LQZLYw66d4_Xw3xXkCVwiQPVAW0ThwZV2uk7_1HgrVQl8FmIS7AsJANsT4ORSx1VxA
 			oc project ace
 			echo "create a base image stream"
@@ -23,19 +36,59 @@ oc apply -f - <<EOF
 apiVersion: image.openshift.io/v1
 kind: ImageStream
 metadata: 
-  name: my-custom-ace-image-10-base
+  name: my-custom-ace-image-${BUILD_NO}
   namespace: ace
 EOF
 '''
- 
-      }
-      catch(error) {
-        println ">> build failed"
+}
+catch(error) {
+		println ">> build failed"
         throw error
-      }
-    }
+}
+}
 }
 
+def step_create_buildConfig(){
+node(){
+try {
+println ("create a build config for deployment")
+sh ''' 
+oc apply -f - <<EOF
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata: 
+  labels: 
+    name: my-custom-ace-image-${BUILD_NO}
+  name: my-custom-ace-image-${BUILD_NO}
+  namespace: ace
+spec: 
+  output: 
+    to: 
+      kind: ImageStreamTag
+      name: "my-custom-ace-image-"+${BUILD_NO}+":latest-amd64"
+      namespace: ace
+  source: 
+    dockerfile: |
+        FROM ace-server-prod-10-base:latest-amd64
+        COPY ${APP_NAME}.bar /home/aceuser/initial-config/bars/${APP_NAME}.bar
+    type: dockerfile
+  strategy: 
+    dockerStrategy: 
+      from: 
+        kind: ImageStreamTag
+        name: "ace-server-prod-10-new:latest-amd64"
+        namespace: ace
+    type: Docker
+  triggers: []
+EOF
+'''
+}
+catch(error) {
+		println ">> build failed"
+        throw error
+}
+}
+}
 def step_run_ta() {
     node() {
       try {
