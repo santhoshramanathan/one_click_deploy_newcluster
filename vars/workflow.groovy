@@ -38,9 +38,9 @@ def call(BuildHandler bHandler) {
                 catch (error) {
                     throw error
                 }
-                finally {
+               /* finally {
                     step([$class: 'WsCleanup', notFailBuild: true, deleteDirs: true])
-                }
+                }*/
             
         }
 
