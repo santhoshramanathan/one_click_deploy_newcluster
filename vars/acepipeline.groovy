@@ -116,7 +116,7 @@ oc apply -f - <<EOF
 apiVersion: appconnect.ibm.com/v1beta1
 kind: IntegrationServer
 metadata: 
-  name: "one-click-${APP_NAME}-${BUILD_NO}"
+  name: "${RELEASE_NAME}"
 spec: 
   barURL: ""
   designerFlowsOperationMode: disabled
