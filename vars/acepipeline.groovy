@@ -5,9 +5,7 @@ def step_build(){
           checkout scm
           println (">> after checkout")
 
-          wrap([$class: 'Xvfb', additionalOptions: '', assignedLabels: '', autoDisplayName: true, installationName: 'Xvfb', screen: '']) {
-          
-            sh ''' echo "build number " + ${BUILD_NO}
+           sh ''' echo "build number " + ${BUILD_NO}
 			oc login ${OPEN_SHIFT_URL} --token=eyJhbGciOiJSUzI1NiIsImtpZCI6Ill2T1N3V3JQTjI2YkE2WWVzajlxTDZXVW40QUdCSDgtMUxmV21wSW1tY3cifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJhY2UiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlY3JldC5uYW1lIjoiZGV2b3BzYWNjLXRva2VuLWpnZHRnIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImRldm9wc2FjYyIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6IjMwZDgxMjU2LWVjYzItNDQ3Yi1hZTQ0LTAxZDAxYWM4YjVhYiIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDphY2U6ZGV2b3BzYWNjIn0.QlULKiWdtLk0r3vBiqyYb_iBPzY89mNcz0gHJ-adLj11QPvJjw_LzAwbX45JlKJCqB4mEo7XYaWYijbI2ldndAl6_97Occ1b0FE_ckmSt4RUevTuCw24x78yUp22RJTpf_FWrQOQc4Ly3DOnGpAhnBV1VuJcOYnKh_0WuMs4osKzzt6AG0R6o3DQOzaHOb7aZpzDv1vwjQBOOdv2gbVGUp9ntGY_8VHf6XVpZ2-HSt4qcQTMWLKL2ylcuWHtS-_pwmnOOz_lMSMSpWwqP6U2LQZLYw66d4_Xw3xXkCVwiQPVAW0ThwZV2uk7_1HgrVQl8FmIS7AsJANsT4ORSx1VxA
 			oc project ace
 			println ("create a base image stream")
@@ -29,9 +27,7 @@ metadata:
   namespace: ace
 EOF
 '''
-              
-            stash includes: '*.bar', name: 'barFileComponent'
-          }
+ 
       }
       catch(error) {
         println ">> build failed"
