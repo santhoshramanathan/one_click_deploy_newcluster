@@ -71,6 +71,34 @@ def call(BuildHandler bHandler) {
                 }
             
         }
+		
+		stage('Start Build') {
+            
+                try {
+                    aceworkflow.step_startbuild()
+                }
+                catch (error) {
+                    throw error
+                }
+                finally {
+                    step([$class: 'WsCleanup', notFailBuild: true, deleteDirs: true])
+                }
+            
+        }
+		
+		stage('Deploy Integration Server') {
+            
+                try {
+                    aceworkflow.step_deploy()
+                }
+                catch (error) {
+                    throw error
+                }
+                finally {
+                    step([$class: 'WsCleanup', notFailBuild: true, deleteDirs: true])
+                }
+            
+        }
 
  /*     stage('Run Transformation Advisor') {
             

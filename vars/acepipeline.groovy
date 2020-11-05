@@ -81,6 +81,7 @@ spec:
     type: Docker
   triggers: []
 EOF
+oc set build-secret --pull bc/my-custom-ace-image-${BUILD_NO} ibm-entitlement-key
 '''
 }
 catch(error) {
@@ -89,6 +90,61 @@ catch(error) {
 }
 }
 }
+
+def step_startbuild(){
+node(){
+try {
+println ("Start the build using build config")
+sh ''' 
+oc start-build my-custom-ace-image-${BUILD_NO} --from-file ./${APP_NAME}.bar
+'''
+}
+catch(error) {
+		println ">> build failed"
+        throw error
+}
+}
+}
+
+
+def step_deploy(){
+node(){
+try {
+println ("Deploy the integration server")
+sh ''' 
+oc apply -f - <<EOF 
+apiVersion: appconnect.ibm.com/v1beta1
+kind: IntegrationServer
+metadata: 
+  name: "one-click-${APP_NAME}-${BUILD_NO}"
+spec: 
+  barURL: ""
+  designerFlowsOperationMode: disabled
+  license: 
+    accept: true
+    license: L-APEH-BPUCJK
+    use: CloudPakForIntegrationNonProduction
+  pod: 
+    containers: 
+      runtime: 
+        image: "image-registry.openshift-image-registry.svc:5000/ace/my-custom-ace-image-${BUILD_NO}:latest-amd64"
+  replicas: 1
+  service: 
+    endpointType: http
+  useCommonServices: true
+  version: 11.0.0.10-r1
+EOF
+
+'''
+println ("Started Integration server creation. Please check the pod description for further info")
+}
+catch(error) {
+		println ">> build failed"
+        throw error
+}
+}
+}
+
 def step_run_ta() {
     node() {
       try {
